@@ -1,2 +1,4 @@
-# custom-event-calendar
+# Kalendář událostí
 Komponenta kalendáře pro správu událostí
+
+![Ukázka kalendáře](./calendar.png)
