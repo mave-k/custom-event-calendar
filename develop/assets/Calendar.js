@@ -203,7 +203,7 @@ class Calendar{
 
     getDaysInNextMonth(today){
         let nextYear = today.getFullYear();
-        let nextMonth = today.getMonth()+1;
+        let nextMonth = today.getMonth();
         if( nextMonth == 11){
             nextMonth = 0;
             nextYear +=1 ;
