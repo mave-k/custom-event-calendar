@@ -14,15 +14,15 @@ class Calendar{
         return date.toISOString().slice(0, 10); // "YYYY-MM-DD"
     }
 
-    /* TODO
     addEvent(name, date, redraw = false){
         date = this.normalizeDate(date)
         this.events.push({name:name, date: date});
-        if(redraw){
+        if( redraw){
+            const selectedDate = document.getElementById('date-picker').value;
             this.redrawCalendar();
+            document.getElementById('date-picker').value = selectedDate;
         }
     }
-    */
 
     createNavigationBar() {
         const navigationBar = document.createElement('div');
