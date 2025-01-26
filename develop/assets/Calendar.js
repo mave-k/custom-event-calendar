@@ -195,16 +195,20 @@ class Calendar{
         if( lastMonth == 0){
             lastMonth = 11;
             lastYear -=1 ;
+        }else{
+            lastMonth -= 1;
         }
         return this.getDaysInMonth(lastYear, lastMonth);
     }
 
     getDaysInNextMonth(today){
         let nextYear = today.getFullYear();
-        let nextMonth = today.getMonth();
+        let nextMonth = today.getMonth()+1;
         if( nextMonth == 11){
             nextMonth = 0;
             nextYear +=1 ;
+        }else{
+            nextMonth += 1;
         }
         return this.getDaysInMonth(nextYear, nextMonth);
     }
