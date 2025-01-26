@@ -8,6 +8,8 @@ class Calendar{
         for (let i = 0; i < this.events.length; i++) {
             this.events[i].date = this.normalizeDate(this.events[i].date);
         }
+        this.displayedDates = []; 
+        this.eventCallback = null;
     }
 
     normalizeDate(date) {
@@ -57,6 +59,8 @@ class Calendar{
         if( !container){
             throw ReferenceError(`Element with ID: ${this.containerID} not found`);
         }
+
+        this.displayedDates = [];
         container.innerHTML = '';
         container.appendChild( this.createNavigationBar());
 
@@ -77,12 +81,15 @@ class Calendar{
         }
 
         let daysInPrevMonth = this.getDaysInPrevMonth(this.today);
+        let displayedDay = null;
         for(    let i = daysInPrevMonth.length - (firstDayInActualMonth.getDay() == 0 ? 7-1 : firstDayInActualMonth.getDay()-1); 
                 i < daysInPrevMonth.length; 
                 i++ ) {
             htmlDay = document.createElement('div');
             htmlDay.classList.add('calendar-cell-other-month');
-            htmlDay.innerText = new Date(daysInPrevMonth[i]).getDate();
+            displayedDay = new Date(daysInPrevMonth[i]);
+            htmlDay.innerText = displayedDay.getDate(); 
+            this.displayedDates.push(displayedDay);
             htmlMainDivCalendar.appendChild(htmlDay);
         }
 
@@ -96,20 +103,31 @@ class Calendar{
             if( foundEvents.length>0){
                 const calendarEvent = document.createElement('div');
                 calendarEvent.classList.add('event');
-                calendarEvent.innerText = i+1;
+                
+                displayedDay = new Date(daysInActualMonth[i]);
+                calendarEvent.innerText = displayedDay.getDate(); 
+                this.displayedDates.push(displayedDay);
+
                 calendarEvent.title = this.getTitle(foundEvents);
                 htmlDay.appendChild(calendarEvent);
+            
             }else{
-                htmlDay.innerText = i+1;
+                displayedDay = new Date(daysInActualMonth[i]);
+                htmlDay.innerText = displayedDay.getDate(); 
+                this.displayedDates.push(displayedDay);
             }
             htmlMainDivCalendar.appendChild(htmlDay);
         }
 
+        let daysInNextMonth = this.getDaysInNextMonth(this.today);
         const nextMonthLength = 49 - htmlMainDivCalendar.childElementCount;
         for( let i = 0; i < nextMonthLength; i++ ) {
             htmlDay = document.createElement('div');
             htmlDay.classList.add('calendar-cell-other-month');
-            htmlDay.innerText = i+1;
+            displayedDay = new Date(daysInNextMonth[i]);
+            htmlDay.innerText = displayedDay.getDate(); 
+            this.displayedDates.push(displayedDay);
+
             htmlMainDivCalendar.appendChild(htmlDay);
         }
 
@@ -134,6 +152,7 @@ class Calendar{
             }
             this.redrawCalendar();
             document.getElementById('date-picker').value = this.today.toISOString().split('T')[0];
+            this.executeCallback();
         });
 
         const prevButton = document.getElementById('btn-prev');
@@ -148,14 +167,26 @@ class Calendar{
             }
             this.redrawCalendar();
             document.getElementById('date-picker').value = this.today.toISOString().split('T')[0];
+            this.executeCallback();
         });
 
         const datePicker = document.getElementById('date-picker');
         datePicker.addEventListener('blur', (e)=>{
             this.today = new Date(document.getElementById('date-picker').value);
             this.redrawCalendar();
-            document.getElementById('date-picker').value = this.today.toISOString().split('T')[0];
+            document.getElementById('date-picker').value = this.today.toISOString().split('T')[0]; 
+            this.executeCallback();           
         });
+    }
+
+    setEventCallback( callback){
+        this.eventCallback = callback;
+    }
+
+    executeCallback(){
+        if( this.eventCallback ){
+            this.eventCallback(this.displayedDates);
+        }
     }
 
     getDaysInPrevMonth(today){
@@ -175,7 +206,7 @@ class Calendar{
             nextMonth = 0;
             nextYear +=1 ;
         }
-        return this.getDaysInMonth(lastYear, lastMonth);
+        return this.getDaysInMonth(nextYear, nextMonth);
     }
 
     getDaysInMonth(year, month){
