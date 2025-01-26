@@ -53,8 +53,8 @@ class Calendar{
         this.redrawCalendar();
         document.getElementById('date-picker').value = this.today.toISOString().split('T')[0];
     }
-
-    redrawCalendar(){
+ 
+    redrawCalendar(){ // TODO add events in prev and next month
         const container = document.getElementById(this.containerID);
         if( !container){
             throw ReferenceError(`Element with ID: ${this.containerID} not found`);
@@ -104,7 +104,8 @@ class Calendar{
                 const calendarEvent = document.createElement('div');
                 calendarEvent.classList.add('event');
                 
-                displayedDay = new Date(daysInActualMonth[i]);
+                displayedDay = new Date(foundEvents[0].date);
+                console.log(foundEvents[0].date);
                 calendarEvent.innerText = displayedDay.getDate(); 
                 this.displayedDates.push(displayedDay);
 
@@ -213,11 +214,11 @@ class Calendar{
         return this.getDaysInMonth(nextYear, nextMonth);
     }
 
-    getDaysInMonth(year, month){
+    getDaysInMonth(year, month){ // TODO better work with Date object
         const days = [];
         const date = new Date(year, month, 1); 
         while (date.getMonth() === month) {
-            days.push(new Date(date)); 
+            days.push(new Date(this.normalizeDate(date))); 
             date.setDate(date.getDate() + 1);
         }        
         return days;
