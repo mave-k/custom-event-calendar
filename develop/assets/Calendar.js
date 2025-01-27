@@ -89,18 +89,37 @@ class Calendar{
                 i++ ) {
             htmlDay = document.createElement('div');
             htmlDay.classList.add('calendar-cell-other-month');
-            displayedDay = new Date(daysInPrevMonth[i]);
-            htmlDay.innerText = displayedDay.getDate(); 
-            this.displayedDates.push(displayedDay);
+         
+            const foundEvents = this.events.filter(row => this.normalizeDate(daysInPrevMonth[i]) == this.normalizeDate(new Date(row.date)));
+            if( foundEvents.length>0){
+                const calendarEvent = document.createElement('div');
+                calendarEvent.classList.add('event');
+                
+                displayedDay = new Date(foundEvents[0].date);
+                console.log(foundEvents[0].date);
+                calendarEvent.innerText = displayedDay.getDate(); 
+                this.displayedDates.push(displayedDay);
+
+                calendarEvent.title = this.getTitle(foundEvents);
+                htmlDay.appendChild(calendarEvent);
+            
+            }else{
+                displayedDay = new Date(daysInPrevMonth[i]);
+                htmlDay.innerText = displayedDay.getDate(); 
+                this.displayedDates.push(displayedDay);
+            }
+
             htmlMainDivCalendar.appendChild(htmlDay);
         }
 
         for( let i = 0; i < daysInActualMonth.length; i++) {
             htmlDay = document.createElement('div');
             htmlDay.classList.add('calendar-cell');
+            
             if( this.today.getDate()-1 == i){
                 htmlDay.classList.add('cell-today');
             }
+
             const foundEvents = this.events.filter(row => this.normalizeDate(daysInActualMonth[i]) == this.normalizeDate(new Date(row.date)));
             if( foundEvents.length>0){
                 console.log(foundEvents);
@@ -120,6 +139,7 @@ class Calendar{
                 htmlDay.innerText = displayedDay.getDate(); 
                 this.displayedDates.push(displayedDay);
             }
+
             htmlMainDivCalendar.appendChild(htmlDay);
         }
 
@@ -128,9 +148,25 @@ class Calendar{
         for( let i = 0; i < nextMonthLength; i++ ) {
             htmlDay = document.createElement('div');
             htmlDay.classList.add('calendar-cell-other-month');
-            displayedDay = new Date(daysInNextMonth[i]);
-            htmlDay.innerText = displayedDay.getDate(); 
-            this.displayedDates.push(displayedDay);
+
+            const foundEvents = this.events.filter(row => this.normalizeDate(new Date(daysInNextMonth[i])) == this.normalizeDate(new Date(row.date)));
+            if( foundEvents.length>0){
+                const calendarEvent = document.createElement('div');
+                calendarEvent.classList.add('event');
+                
+                displayedDay = new Date(foundEvents[0].date);
+                console.log(foundEvents[0].date);
+                calendarEvent.innerText = displayedDay.getDate(); 
+                this.displayedDates.push(displayedDay);
+
+                calendarEvent.title = this.getTitle(foundEvents);
+                htmlDay.appendChild(calendarEvent);
+            
+            }else{
+                displayedDay = new Date(daysInNextMonth[i]);
+                htmlDay.innerText = displayedDay.getDate(); 
+                this.displayedDates.push(displayedDay);
+            }
 
             htmlMainDivCalendar.appendChild(htmlDay);
         }
@@ -217,7 +253,7 @@ class Calendar{
         return this.getDaysInMonth(nextYear, nextMonth);
     }
 
-    getDaysInMonth(year, month){ // TODO better work with Date object
+    getDaysInMonth(year, month){
         const days = [];
         const date = new Date(year, month, 1); 
         while (date.getMonth() === month) {
