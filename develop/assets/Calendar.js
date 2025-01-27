@@ -51,12 +51,15 @@ class Calendar{
         return navigationBar;
     }
 
-    render(){
+    render( executeCallback = false){
         this.redrawCalendar();
         document.getElementById('date-picker').value = this.today.toISOString().split('T')[0];
+        if( executeCallback){
+            this.executeCallback();
+        }
     }
  
-    redrawCalendar(){ // TODO add events in prev and next month
+    redrawCalendar(){
         const container = document.getElementById(this.containerID);
         if( !container){
             throw ReferenceError(`Element with ID: ${this.containerID} not found`);
@@ -96,7 +99,6 @@ class Calendar{
                 calendarEvent.classList.add('event');
                 
                 displayedDay = new Date(foundEvents[0].date);
-                console.log(foundEvents[0].date);
                 calendarEvent.innerText = displayedDay.getDate(); 
                 this.displayedDates.push(displayedDay);
 
@@ -122,12 +124,10 @@ class Calendar{
 
             const foundEvents = this.events.filter(row => this.normalizeDate(daysInActualMonth[i]) == this.normalizeDate(new Date(row.date)));
             if( foundEvents.length>0){
-                console.log(foundEvents);
                 const calendarEvent = document.createElement('div');
                 calendarEvent.classList.add('event');
                 
                 displayedDay = new Date(foundEvents[0].date);
-                console.log(foundEvents[0].date);
                 calendarEvent.innerText = displayedDay.getDate(); 
                 this.displayedDates.push(displayedDay);
 
@@ -155,7 +155,6 @@ class Calendar{
                 calendarEvent.classList.add('event');
                 
                 displayedDay = new Date(foundEvents[0].date);
-                console.log(foundEvents[0].date);
                 calendarEvent.innerText = displayedDay.getDate(); 
                 this.displayedDates.push(displayedDay);
 
