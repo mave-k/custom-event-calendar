@@ -17,9 +17,12 @@
     
     <script type="text/javascript" src="assets/Calendar.js"></script>
     <script type="text/javascript">
-        const events = [    {name:'event1', date: new Date('2025-01-24')}, 
-                            {name:'event2', date: new Date('2025-01-20')}, 
-                            {name:'event3', date: new Date('2025-01-15')} ];
+        const events = [    {name:'event1', date: '2025-01-01'}, 
+                            {name:'event1', date: '2025-01-24'}, 
+                            {name:'event1', date: '2024-12-31'}, 
+                            {name:'event1', date: '2025-02-05'}, 
+                            {name:'event2', date: '2025-01-20'}, 
+                            {name:'event3', date: '2025-01-15'} ];
         
         const c = new Calendar('main', null, []);
         c.render();

@@ -6,19 +6,21 @@ class Calendar{
         this.events = arrEvents; 
         this.days = (days.length == 0 ? ['Po','Út','St','Čt','Pá','So','Ne']: days);       
         for (let i = 0; i < this.events.length; i++) {
-            this.events[i].date = this.normalizeDate(this.events[i].date);
+            this.events[i].date = new Date(this.events[i].date);
         }
         this.displayedDates = []; 
         this.eventCallback = null;
     }
 
     normalizeDate(date) {
-        return date.toISOString().slice(0, 10); // "YYYY-MM-DD"
+        const day = date.getDate();
+        const month = date.getMonth();
+        const year = date.getFullYear();
+        return `${year}-${month}-${day}`
     }
 
     addEvent(name, date, redraw = false){
-        date = this.normalizeDate(date)
-        this.events.push({name:name, date: date});
+        this.events.push({name:name, date: new Date(date)});
         if( redraw){
             const selectedDate = document.getElementById('date-picker').value;
             this.redrawCalendar();
@@ -99,8 +101,9 @@ class Calendar{
             if( this.today.getDate()-1 == i){
                 htmlDay.classList.add('cell-today');
             }
-            const foundEvents = this.events.filter(row => this.normalizeDate(new Date(daysInActualMonth[i])) == row.date);
+            const foundEvents = this.events.filter(row => this.normalizeDate(daysInActualMonth[i]) == this.normalizeDate(new Date(row.date)));
             if( foundEvents.length>0){
+                console.log(foundEvents);
                 const calendarEvent = document.createElement('div');
                 calendarEvent.classList.add('event');
                 
@@ -218,7 +221,7 @@ class Calendar{
         const days = [];
         const date = new Date(year, month, 1); 
         while (date.getMonth() === month) {
-            days.push(new Date(this.normalizeDate(date))); 
+            days.push(new Date(date)); 
             date.setDate(date.getDate() + 1);
         }        
         return days;
