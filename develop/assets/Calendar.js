@@ -19,6 +19,10 @@ class Calendar{
         return `${year}-${month}-${day}`
     }
 
+    clearEvents(){
+        this.events = [];
+    }
+
     addEvent(name, date, redraw = false){
         this.events.push({name:name, date: new Date(date)});
         if( redraw){
